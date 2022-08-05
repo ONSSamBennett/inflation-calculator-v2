@@ -100,14 +100,14 @@
 
 
       <div id="inputs0">
-        <div class="hidden-on-mobile row-major">
+        <!-- <div class="hidden-on-mobile row-major">
           <div class="chapter-line progress"></div>
           <div class="chapter-line progress"></div>
           <div class="chapter-line progress"></div>
           <div class="chapter-line progress"></div>
           <div class="chapter-line progress"></div>
           <div class="chapter-line progress"></div>
-        </div>
+        </div> -->
 
         <div class="graphic-heading">Start</div>
 
@@ -1268,10 +1268,14 @@
     </div>
     <!-- end grey box -->
   <div id="option-select" class="frontpage row-buttons" style="display:none;">
-    <p id="option-button-text" class="bold">Want more accurate results?</p>
-    <button id="option-button" class="button-clear"  value="quick">
-      <p>Why not use our detailed calculator</p>
-    </button>
+    <div class="option-select-minor">
+      <p id="option-button-text" class="bold">Want more accurate results?</p>
+    </div>
+    <div class="option-select-minor">
+      <button id="option-button" class="button-clear"  value="quick">
+        <p>Why not use our detailed calculator</p>
+      </button>
+    </div>
   </div>
 
     <div class="row-major">
@@ -1396,6 +1400,16 @@
     </div>
       <p class="updatetext" id="inflation-updated"></p>
       <p class="updatetext" id="spend-updated">Estimated spend data last updated: 17 Aug 2022</p>
+    </div>
+
+    <div>
+      <p></p>
+    </div>
+    <div class="info-box info-box-light">
+      <p></p>
+      <p class="bold">This interactive is in development.</p>
+      <p>We'd really appreciate your feedback to help us further develop the tool.
+      <a href="https://www.surveymonkey.co.uk/r/CVHLF5P" target="_blank">Help us improve this prototype, by filling out this 5 minute survey.</a>
     </div>
     <!-- ends results -->
 

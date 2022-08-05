@@ -332,6 +332,14 @@ button.socialbutton {
   height: 100px;
 }
 
+.option-select-minor{
+  width:100%;
+}
+
+#option-button-text{
+  justify-content: center;
+}
+
 .toDetailed{
   display: flex;
   align-items: center;
