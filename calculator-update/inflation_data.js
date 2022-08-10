@@ -24,7 +24,7 @@ inflation_data = [
  {
    "cat_id": "tobacco",
    "page": "Groceries",
-   "category": "Tobacco products including e-cigarettes",
+   "category": "Tobacco products",
    "description": "Add description here...",
    "inf_values": [],
    "inflation_cdid": "L56M",
@@ -68,7 +68,7 @@ inflation_data = [
  {
    "cat_id": "maintenance",
    "page": "Housing",
-   "category": "Home maintainance costs",
+   "category": "Home maintenance costs",
    "description": "This includes costs for home repairs, decorating, and improvements.",
    "inf_values": [],
    "inflation_cdid": "L56T",

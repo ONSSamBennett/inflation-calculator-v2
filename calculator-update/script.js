@@ -33,8 +33,17 @@ function drawGraphic() {
     propMargins = dvc.propChartMargin[size];
   } //end initialise
 
+  option = "quick"
+
 
   function enablePageButtons() {
+
+    d3.select("#startButton").on("click",function(){
+      show(d3.select("#inputs0"))
+      show(d3.select("#navbuttons"))
+      show(d3.select("#updateDiv"))
+      hide(d3.select("#startPage"))
+    })
 
     // d3.select(".button-select").style('display','block')
 
@@ -46,7 +55,7 @@ function drawGraphic() {
       show(d3.select('#inputs0'))
       show(d3.select('#navbuttons'))
       if (option != "superfast"){
-        hide(d3.select("#skipToEndButton"))
+        hide(d3.select("#skipToEndBox"))
       }
       if (option == "superfast"){
         hide(d3.select("#intro-next-button"))
@@ -62,13 +71,18 @@ function drawGraphic() {
 
     // front page next button
     d3.select('button#intro-next-button').on('click', function() {
+      show(d3.select(".button-back"))
       hide(d3.select('#inputs' + counter))
       if (counter == 0 & option == "detailed") {
-        disableSkipToEnd();
+        // disableSkipToEnd();
         if (d3.select('input[name="income"]:checked').node().value == "net-income") {
+          show(d3.select("#skipToEndBox"))
           var decile = getDecile(d3.select("#netincome-input").property("value") * (d3.select("#netincome-time-period").property("value") / 12));
+          d3.select("#runninginf-basedon").text("households with a similar income")
         } else {
           decile = 0
+          hide(d3.select("#skipToEndBox"))
+          d3.select("#runninginf-basedon").text("the UK average")
         }
         addAverages(decile);
         updateRunningTotal(decile);
@@ -84,19 +98,25 @@ function drawGraphic() {
       } //if on front page and next is clicked remove skip to end button and replace with back button
 
       else if (counter == 0 & option == "quick"){
-        disableSkipToEnd();
+        show(d3.selectAll("#option-select"))
+        // disableSkipToEnd();
         if (d3.select('input[name="income"]:checked').node().value == "net-income") {
           var decile = getDecile(d3.select("#netincome-input").property("value") * (d3.select("#netincome-time-period").property("value") / 12));
+          show(d3.select("#skipToEndBox"))
+          d3.select("#runninginf-basedon").text("household with a similar income")
         } else {
           decile = 0
+          hide(d3.select("#skipToEndBox"))
+          d3.select("#runninginf-basedon").text("the UK average")
         }
         addAverages(decile);
         updateRunningTotal(decile);
         calculate(final_data, cpih_selected, decile, option)
-        d3.select("#currentinflation").text(d3.format(".1f")(overall_inflation[0].pir)+"%")
+        d3.select("#currentinflation").text(d3.format(".1f")(overall_inflation[0].pir)+"%*")
         // show(d3.select("#monthlyexpenditure"))
         // show(d3.select("#monthlyexpenditure"))
         show(d3.select("#inflationrate-summary"))
+        show(d3.select("#currentinflation"))
         show(d3.select("#inputs-quick"))
         show(d3.select("#option-select"))
         if(housingsit == "mortgage"){
@@ -151,7 +171,7 @@ function drawGraphic() {
         counter++
         showResults();
         hide(d3.select("#inputs-quick"))
-        show(d3.select("#backtoDetailed"))
+        // show(d3.select("#backtoDetailed"))
         pymChild.sendHeight()
         document.getElementById("graphic-container").scrollIntoView(true)
         calculate(final_data, cpih_selected, decile, option)
@@ -160,19 +180,27 @@ function drawGraphic() {
 
     });
 
-    d3.select("#option-button").on('click',function(){
+    d3.selectAll("#option-button").on('click',function(){
       // d3.select(this).text(option.charAt(0).toUpperCase() + option.slice(1))
+      // option = d3.select(this).property("value")
       if (option == "quick"){
-        d3.select("#option-button-text").text("Too many categories?")
-        d3.select(this).text("Click here to go back to our quick calculator")
+        hide(d3.select(".option-select-detailed"))
+        // d3.selectAll("#option-button-text").text("Too many categories?")
+        // // hide(d3.select("#option-button-text2"))
+        // d3.selectAll("#option-button").text("use our quick calculator")
+        // d3.selectAll("#option-button-subtext2").text(" ")
         d3.select(this).property("value","detailed")
         option = d3.select(this).property("value")
         counter = 0
-        disableSkipToEnd();
+        // disableSkipToEnd();
         if (d3.select('input[name="income"]:checked').node().value == "net-income") {
           var decile = getDecile(d3.select("#netincome-input").property("value") * (d3.select("#netincome-time-period").property("value") / 12));
+          show(d3.select("#skipToEndBox"))
+          d3.select("#runninginf-basedon").text("households with a similar income")
         } else {
           decile = 0
+          hide(d3.select("#skipToEndBox"))
+          d3.select("#runninginf-basedon").text("the UK average")
         }
         quickcategories.forEach(function(category){
           var val = d3.select("#"+category+"-quick").property("value")
@@ -191,16 +219,24 @@ function drawGraphic() {
         document.getElementById("graphic-container").scrollIntoView(true)
       }
       else{
-        d3.select("#option-button-text").text("Want more accurate results?")
-        d3.select(this).text("Why not use our detailed calculator")
+        // d3.selectAll("#option-button-text").text("Want more accurate results?")
+        // show(d3.select("#option-button-text2"))
+        // d3.selectAll("#option-button").text("use our detailed calculator")
+        // d3.selectAll("#option-button-subtext").text("to input your spending for more categories")
+        show(d3.select(".option-select-detailed"))
+        hide(d3.select("#inputs"+counter))
         d3.select(this).property("value","quick")
         option = d3.select(this).property("value")
         counter = 0
-        disableSkipToEnd();
+        // disableSkipToEnd();
         if (d3.select('input[name="income"]:checked').node().value == "net-income") {
           var decile = getDecile(d3.select("#netincome-input").property("value") * (d3.select("#netincome-time-period").property("value") / 12));
+          show(d3.select("#skipToEndBox"))
+          d3.select("#runninginf-basedon").text("households with a similar income")
         } else {
           decile = 0
+          hide(d3.select("#skipToEndBox"))
+          d3.select("#runninginf-basedon").text("the UK average")
         }
         quickcategories.forEach(function(category){
           var val = d3.select("#"+category).property("value")
@@ -223,6 +259,7 @@ function drawGraphic() {
     })
 
     d3.select("#results-detailed").on('click',function(){
+      // hide(d3.select("#option-button-text2"))
       hide(d3.select("#results"))
       show(d3.select("#inputs1"))
       show(d3.select("#navbuttons"))
@@ -231,6 +268,8 @@ function drawGraphic() {
       // show(d3.select("#intro-next-button"))
       // show(d3.select("#backButton-frontpage"))
       show(d3.select("#monthlyexpenditure"))
+      pymChild.sendHeight();
+      document.getElementById("graphic-container").scrollIntoView(true)
       d3.select("#option-button").text("Click here to go back to our quick calculator")
       counter = 1
       option = "detailed"
@@ -247,9 +286,12 @@ function drawGraphic() {
       .on('click', function() {
       if (d3.select('input[name="income"]:checked').node().value == "net-income") {
         var decile = getDecile(d3.select("#netincome-input").property("value") * (d3.select("#netincome-time-period").property("value") / 12));
+        d3.select("#runninginf-basedon").text("households with a similar income")
       } else {
         decile = 0
+        d3.select("#runninginf-basedon").text("the UK average")
       }
+      hide(d3.select("#inputs-quick"))
       option = "superfast"
       prefill(decile);
       addAverages(decile);
@@ -259,10 +301,6 @@ function drawGraphic() {
       pymChild.sendHeight();
       document.getElementById("graphic-container").scrollIntoView(true)
     });
-
-    if (size == "sm"){
-      d3.select("#skipToEndButton").text("Skip to end")
-    }
 
     // back button front page
     d3.select("button#backButton-frontpage").on('click', function() {
@@ -331,6 +369,13 @@ function drawGraphic() {
       pymChild.sendHeight();
       document.getElementById("graphic-container").scrollIntoView(true)
     })
+
+    d3.selectAll('input').on("click",function(){
+      var value = d3.select(this).property("value")
+      if (value == 0){
+        d3.select(this).property("value","")
+      }
+    })
   }
 
   function enableIncomePage() {
@@ -341,12 +386,12 @@ function drawGraphic() {
     })
     d3.select("#net-income-radio").on('click', function() {
       show(d3.select('#net-income-input'))
-      d3.select("#skipToEndButton").property("disabled", false).classed("disabled", false)
+      // d3.select("#skipToEndButton").property("disabled", false).classed("disabled", false)
       pymChild.sendHeight();
     })
     d3.select("#average-radio").on('click', function() {
       hide(d3.select('#net-income-input'))
-      d3.select("#skipToEndButton").property("disabled", true).classed("disabled", true)
+      // d3.select("#skipToEndButton").property("disabled", true).classed("disabled", true)
       pymChild.sendHeight();
     })
   }
@@ -374,22 +419,22 @@ function drawGraphic() {
       category_spend = Object.values(category_spend[0])
       if (category.cat_id == "rent" & (housingsit == "mortgage" | housingsit == "nohcost")){
         d3.selectAll("#" + category.cat_id + "-avgcompare")
-          .text("Similar households spend on average: £0")
+          .text("Similar households spend: £0")
       }
       else if (category.cat_id == "ooh" & (housingsit == "rent" | housingsit == "nohcost")){
         d3.selectAll("#" + category.cat_id + "-avgcompare")
-          .text("Similar households spend on average: £0")
+          .text("Similar households spend: £0")
       }
       else if (category.cat_id == "ooh" | category.cat_id == "rent"){
         d3.selectAll("#" + category.cat_id + "-avgcompare")
-          .text("Similar households spend on average: £" + (d3.format(".2f")(category_spend[decile + 1] / (d3.select("#" + category.cat_id + "-time-period").property("value") / 12))))
+          .text("Similar households spend: £" + (d3.format(".0f")(category_spend[decile + 1] / (d3.select("#" + category.cat_id + "-time-period").property("value") / 12))))
       }
       else if (decile == 0 & category.cat_id != "other") {
         d3.selectAll("#" + category.cat_id + "-avgcompare")
-          .text("UK average: £" + (d3.format(".2f")(category_spend[decile + 1] / (d3.select("#" + category.cat_id + "-time-period").property("value") / 12))))
+          .text("UK average: £" + (d3.format(".0f")(category_spend[decile + 1] / (d3.select("#" + category.cat_id + "-time-period").property("value") / 12))))
       } else if (decile > 0 & category.cat_id != "other") {
         d3.selectAll("#" + category.cat_id + "-avgcompare")
-          .text("Similar households spend on average: £" + (d3.format(".2f")(category_spend[decile + 1] / (d3.select("#" + category.cat_id + "-time-period").property("value") / 12))))
+          .text("Similar households spend: £" + (d3.format(".0f")(category_spend[decile + 1] / (d3.select("#" + category.cat_id + "-time-period").property("value") / 12))))
       }
       // else if (category.cat_id != "other") {
       //   d3.select("#" + category.cat_id + "-avgcompare")
@@ -487,7 +532,6 @@ function drawGraphic() {
     }
 
     diff = ((input - category_spend[decile + 1]) / category_spend[decile + 1]) * 100
-
     if (diff > 0) {
       moreless = "more than"
     } else if (diff < 0) {
@@ -500,17 +544,17 @@ function drawGraphic() {
     if (input != 0 && diff == 0 && decile > 0 && id != "other") {
       d3.selectAll("#" + id + "-avgcompare").text(moreless + " similar households")
     } else if (input != 0 && diff == 0 && decile == 0 && id != "other") {
-      d3.selectAll("#" + id + "-avgcompare").text(moreless + " the average household")
+      d3.selectAll("#" + id + "-avgcompare").text(moreless + " the average")
     } else if (input != 0 && decile > 0 && id != "other") {
       d3.selectAll("#" + id + "-avgcompare").text(d3.format(".0f")(diff) + "% " + moreless + " similar households")
     } else if (input != 0 && decile == 0 && id != "other") {
-      d3.selectAll("#" + id + "-avgcompare").text(d3.format(".0f")(diff) + "% " + moreless + " the average household")
+      d3.selectAll("#" + id + "-avgcompare").text(d3.format(".0f")(diff) + "% " + moreless + " the average")
     } else if (input == 0 && decile > 0 && id != "other") {
-      d3.selectAll("#" + id + "-avgcompare").text("Similar households spend on average: £" + (d3.format(".2f")(category_spend[decile + 1] / (d3.select("#" + id + "-time-period" + idoption).property("value") / 12))))
+      d3.selectAll("#" + id + "-avgcompare").text("Similar households spend: £" + (d3.format(".0f")(category_spend[decile + 1] / (d3.select("#" + id + "-time-period" + idoption).property("value") / 12))))
     } else if(input == 0 && decile == 0 && id != "other" && id != "rent" && id != "ooh"){
-      d3.selectAll("#" + id + "-avgcompare").text("UK average: £" + (d3.format(".2f")(category_spend[decile + 1] / (d3.select("#" + id + "-time-period" + idoption).property("value") / 12))))
+      d3.selectAll("#" + id + "-avgcompare").text("UK average: £" + (d3.format(".0f")(category_spend[decile + 1] / (d3.select("#" + id + "-time-period" + idoption).property("value") / 12))))
     } else if (input == 0 && decile == 0 && id != "other") {
-      d3.selectAll("#" + id + "-avgcompare").text("Similar households spend on average: £" + (d3.format(".2f")(category_spend[decile + 1] / (d3.select("#" + id + "-time-period" + idoption).property("value") / 12))))
+      d3.selectAll("#" + id + "-avgcompare").text("Similar households spend: £" + (d3.format(".0f")(category_spend[decile + 1] / (d3.select("#" + id + "-time-period" + idoption).property("value") / 12))))
     }
   }
 
@@ -528,7 +572,7 @@ function drawGraphic() {
           node = this
           numberTransition = d3.interpolateNumber(prevInflation, currInflation)
           return function(t) {
-            d3.select(node).html(d3.format(",.1f")(numberTransition(t))+"%")
+            d3.select(node).html(d3.format(",.1f")(numberTransition(t))+"%*")
             if (t == 1) {
               prevInflation = currInflation
             }
@@ -558,12 +602,12 @@ function drawGraphic() {
   }
 
   function disableSkipToEnd() {
-    hide(d3.select("#skipToEndButton"));
+    hide(d3.select("#skipToEndBox"));
     show(d3.select("#backButton-frontpage"));
   }
 
   function enableSkipToEnd() {
-    show(d3.select("#skipToEndButton"));
+    show(d3.select("#skipToEndBox"));
     hide(d3.select("#backButton-frontpage"));
   }
 
@@ -743,7 +787,7 @@ function drawGraphic() {
       })
       d3.select("#currentInflationRate").text(d3.format(".1f")(cpih[0].value) + "%")
 
-      d3.select("#increaseMonthlySpend").text("£" + d3.format(".2f")(overall_inflation[0].total_change))
+      d3.select("#increaseMonthlySpend").text("£" + d3.format(".0f")(overall_inflation[0].total_change))
       d3.selectAll(".dateOneYearPrior").text(d3.timeFormat("%B %Y")(overall_inflation[12].date))
       d3.selectAll(".dateFiveYearsPrior").text(d3.timeFormat("%B %Y")(overall_inflation[59].date))
       d3.selectAll(".currentDate").text(d3.timeFormat("%B %Y")(overall_inflation[0].date))
@@ -807,6 +851,17 @@ function drawGraphic() {
         return b.change - a.change;
       })
 
+      quickcats_byInc = []
+
+      if(option == "quick"){
+        categoryByIncrease.forEach(function(d){
+          if(dvc.quickcategories.includes(d.cat_id)){
+            quickcats_byInc.push(d)
+          }
+        })
+        categoryByIncrease = quickcats_byInc
+      }
+
       categoryByIncrease_slice = categoryByIncrease.slice(0, 5)
 
       averages_slice = []
@@ -817,7 +872,6 @@ function drawGraphic() {
           }
         })
       })
-        // console.log(averages_filter)
 
       categoryByIncrease_slice.reverse()
       categoryByIncrease.reverse()
@@ -834,6 +888,15 @@ function drawGraphic() {
       ranks_data = {}
       proportiondata.push({key: "Your inflation", data: categoryByWeight})
       total_inf = 0
+      // if (option == "quick"){
+      //   proportiondata[0].data.forEach(function(d, i){
+      //     if (dvc.quickcategories.includes(d.cat_id) == false){
+      //       console.log(d.cat_id,"splice")
+      //       proportiondata[0].data.push(proportiondata[0].data[i].splice);
+      //     }
+      //   })
+      //   console.log(proportiondata[0].data)
+      // }
       proportiondata[0].data.forEach(function(d, i){
         if (i < dvc.prop_colour_palette.length){
           d.propid = d.cat_id
@@ -886,6 +949,12 @@ function drawGraphic() {
         similarhh_ir = similarhh_ir + category.weighted_index
       })
 
+      if (option == "superfast"){
+        show(d3.select("#estimated-legend"))
+      }
+      else{
+        hide(d3.select("#estimated-legend"))
+      }
 
       baroption = "condensed"
       drawProportionChart(proportiondata,baroption)
@@ -895,12 +964,12 @@ function drawGraphic() {
         if (baroption == "condensed"){
           baroption = "expanded"
           drawBarChart(categoryByIncrease,averages,baroption)
-          d3.select("#seemore").text("See less ")
+          d3.select("#seemore").text("◄ See less ")
         }
         else if (baroption == "expanded"){
           baroption = "condensed"
           drawBarChart(categoryByIncrease_slice,averages_slice,baroption)
-          d3.select("#seemore").text("See more ")
+          d3.select("#seemore").text("► See more ")
         }
       })
     }
@@ -913,6 +982,19 @@ function drawGraphic() {
     // if (baroption == "condensed"){
     height = 100;
     var chart_width = parseInt(d3.select(".results-input").style("width")) - propMargins.left - propMargins.right;
+
+    console.log(data[0].data)
+
+    d3.select("#propChart-alttext")
+      .text(
+        "This chart shows how each spending category contributes to your overall inflation rate " +
+        ". The biggest contributor to your overall inflation rate was " + data[0].data[0].category +
+        " which increased your total monthly spend by " + d3.format(',.1f')(data[0].data[0].weighted_index) + "%" +
+        ". The second contributor to your overall inflation rate was " + data[0].data[1].category +
+        " which increased your total monthly spend by " + d3.format(',.1f')(data[0].data[1].weighted_index) + "%"  +
+        ". The third contributor to your overall inflation rate was " + data[0].data[2].category +
+        " which increased your total monthly spend by " + d3.format(',.1f')(data[0].data[2].weighted_index) + "%" 
+      )
 
     var x = d3.scaleLinear()
       .range([0, chart_width]);
@@ -993,25 +1075,43 @@ function drawGraphic() {
           }
         })
         .style('stroke', function(d, i){
-          if (i < dvc.prop_colour_palette.length){
-            return dvc.prop_colour_palette[i]
+          if (i == 0){
+            return "#FBC900"
           }
           else{
             return "#CCC"
           }
         })
         .style('stroke-width', function(d, i){
-          if (i < dvc.prop_colour_palette.length+1){
-            0
+          if (i == 0){
+            return 3
           }
           else{
-            return 1
+            return 0
           }
         })
+        .attr("tabindex",0)
+        // d3.selectAll(".propDataRect")
+
 
         d3.selectAll(".propDataRect")
-          .on("mouseover",handleMouseOverProp)
-          .on("mouseout",handleMouseOutProp)
+          .on("click",handleMouseClick)
+          .on("keypress",handleMouseClick)
+            // .on("mouseover",handleMouseOverProp)
+            // .on("mouseout",handleMouseOutProp)
+
+        function handleMouseClick(d,i){
+          var selectedCat = d.propid
+          if (typeof selectedCat == 'undefined'){
+            var selectedCat = d.key
+            i = i - data[0].data.length
+          }
+          d3.selectAll(".propDataRect").style("stroke-width",0)
+          d3.selectAll("#propDataRect-"+selectedCat).style("stroke-width",3).style("stroke","#FBC900").moveToFront()
+          d3.select("#selectedProp").text(data[0].data[i].propname.charAt(0).toLowerCase()+data[0].data[i].propname.slice(1)).style("color",dvc.prop_colour_palette_text[i])
+          d3.select("#selectedPropVal").text(d3.format(".1f")(data[0].data[i].weighted_index)+"%")
+          d3.select("#infProp").text(d3.format(".1f")((data[0].data[i].weighted_index/overall_inflation[0].pir)*100)+"%")
+        }
 
         function handleMouseOverProp(d,i){
           // if (i < dvc.prop_colour_palette.length | (i >= data[0].data.length && i < data[0].data.length+dvc.prop_colour_palette.length)){
@@ -1020,8 +1120,9 @@ function drawGraphic() {
               var selectedCat = d.key
               i = i - data[0].data.length
             }
-            d3.selectAll("#propDataRect-"+selectedCat).style("stroke-width",1.5).style("stroke","black").moveToFront()
-            d3.select("#selectedProp").text(data[0].data[i].propname.charAt(0).toLowerCase()+data[0].data[i].propname.slice(1)).style("fill",dvc.prop_colour_palette[i])
+            d3.selectAll(".propDataRect").style("stroke-width",0)
+            d3.selectAll("#propDataRect-"+selectedCat).style("stroke-width",3).style("stroke","#FBC900").moveToFront()
+            d3.select("#selectedProp").text(data[0].data[i].propname.charAt(0).toLowerCase()+data[0].data[i].propname.slice(1)).style("color",dvc.prop_colour_palette[i])
             d3.select("#selectedPropVal").text(d3.format(".1f")(data[0].data[i].weighted_index)+"%")
             d3.select("#infProp").text(d3.format(".1f")((data[0].data[i].weighted_index/overall_inflation[0].pir)*100)+"%")
             // d3.select("#selectedProp_avg").text(data[1].data[i].category.charAt(0).toLowerCase()+data[1].data[i].category.slice(1)).style("fill",dvc.prop_colour_palette[i])
@@ -1037,7 +1138,7 @@ function drawGraphic() {
               var selectedCat = d.key
             }
             d3.selectAll("#propDataRect-"+selectedCat).style("stroke-width",0)
-            d3.select("#selectedProp").text((firstcat.category.charAt(0).toLowerCase()+firstcat.category.slice(1))).style("fill",dvc.prop_colour_palette[0])
+            d3.select("#selectedProp").text((firstcat.category.charAt(0).toLowerCase()+firstcat.category.slice(1))).style("color",dvc.prop_colour_palette[0])
             d3.select("#selectedPropVal").text(d3.format(".1f")(firstcat.weighted_index)+"%")
             d3.select("#infProp").text(d3.format(".1f")((firstcat.weighted_index/overall_inflation[0].pir)*100)+"%")
             // d3.select("#selectedProp_avg").text((firstcat_avg.category.charAt(0).toLowerCase()+firstcat.category.slice(1))).style("fill",dvc.prop_colour_palette[0])
@@ -1078,25 +1179,26 @@ function drawGraphic() {
       var firstcat = data[0].data[0]
 
 
-      var textnode = svg.append('text')
-        .attr('class','propgraph-label row-major')
-        .attr('transform','translate('+(chart_width/2)+','+(y("Your inflation")+y.bandwidth()+70)+')')
+      // var textnode = svg.append('text')
+      //   .attr('class','propgraph-label row-major')
+      //   .attr('transform','translate('+(chart_width/2)+','+(y("Your inflation")+y.bandwidth()+70)+')')
         // .text("Spend on "+(firstcat.category.charAt(0).toLowerCase()+firstcat.category.slice(1))+" caused your monthly spend to increase by "+d3.format(".1f")(firstcat.weighted_index)+"%")
 
       var chart_width = parseInt(someContainer.style("width"))
 
-      textnode.append('tspan').attr('id','proptext1').text("Spend on ")
-      textnode.append('tspan').attr('id','selectedProp').text((firstcat.category.charAt(0).toLowerCase()+firstcat.category.slice(1))).style("fill",dvc.prop_colour_palette[0]).style("font-weight",700)
-      textnode.append('tspan').attr('id','proptext2').text(" have caused your average monthly costs to increase by ")
-      textnode.append('tspan').attr('id','selectedPropVal').text(d3.format(".1f")(firstcat.weighted_index)+"%").style("font-weight",700)
-      textnode.append("br")
-      textnode.append('tspan').attr('id','proptext3').text("This accounted for ").attr('dy',20).attr('x',0)
-      textnode.append('tspan').attr('id','infProp').text(d3.format(".1f")((firstcat.weighted_index/overall_inflation[0].pir)*100)+"%").style("font-weight",700)
-      textnode.append('tspan').attr('id','proptext4').text(" of your total inflation rate")
+      d3.select('#selectedProp').text((firstcat.category.charAt(0).toLowerCase()+firstcat.category.slice(1))).style("color",dvc.prop_colour_palette[0]).style("font-weight",700)
+      d3.select('#selectedPropVal').text(d3.format(".1f")(firstcat.weighted_index)+"%").style("font-weight",700)
+      d3.select('#infProp').text(d3.format(".1f")((firstcat.weighted_index/overall_inflation[0].pir)*100)+"%").style("font-weight",700)
 
+      // textnode.append('tspan').attr('id','proptext1').text("Spend on ")
+      // textnode.append('tspan').attr('id','selectedProp').text((firstcat.category.charAt(0).toLowerCase()+firstcat.category.slice(1))).style("fill",dvc.prop_colour_palette[0]).style("font-weight",700)
+      // textnode.append('tspan').attr('id','proptext2').text(" have caused your average monthly costs to increase by ")
+      // textnode.append('tspan').attr('id','selectedPropVal').text(d3.format(".1f")(firstcat.weighted_index)+"%").style("font-weight",700)
+      // textnode.append("br")
+      // textnode.append('tspan').attr('id','proptext3').text("This accounted for ").attr('dy',20).attr('x',0)
+      // textnode.append('tspan').attr('id','infProp').text(d3.format(".1f")((firstcat.weighted_index/overall_inflation[0].pir)*100)+"%").style("font-weight",700)
+      // textnode.append('tspan').attr('id','proptext4').text(" of your total inflation rate")
 
-
-      console.log(parseInt(someContainer.style("width")))
 
       // var firstcat_avg = data[1].data[0]
       // var textnode2 = svg.append('text')
@@ -1134,14 +1236,27 @@ function drawGraphic() {
     }
     else if (baroption == "expanded"){
       if (size == "sm"){
-        height = 1650;
+        height = 60*data.length;
+      }
+      else if (size == "md"){
+        height = 45*data.length
       }
       else{
-        height = 1050;
+        height = 45*data.length;
       }
       textpos = -5
     }
     var chart_width = parseInt(d3.select(".results-input").style("width")) - barMargins.left - barMargins.right;
+
+    d3.select("#barChart-alttext")
+    .text(
+      "This bar chart show the top 5 categories where we estimate your spending has increased and the amount your spend on each has increased by"
+      + "Your biggest increase was for " + data[0].category + " which increased by £" + d3.format(',.0f')(data[0].change)
+      + ". Your second biggest increase was for " + data[1].category + " which increased by £" + d3.format(',.0f')(data[1].change)
+      + ". Your third biggest increase was for " + data[2].category + " which increased by £" + d3.format(',.0f')(data[2].change)
+      + ". Your forth biggest increase was for " + data[3].category + " which increased by £" + d3.format(',.0f')(data[3].change)
+      + ". Your fifth biggest increase was for " + data[4].category + " which increased by £" + d3.format(',.0f')(data[4].change)
+    )
 
     var x = d3.scaleLinear()
       .range([0, chart_width]);
@@ -1150,17 +1265,19 @@ function drawGraphic() {
       .range([height, 0])
       .paddingInner(0.4);
 
+    var maxX = d3.max(data,function(d){return d.input})
+
     x.domain([0, d3.max(data, function(d) {
       return d.input;
     })]);
     y.domain(data.map(function(d) {
       return d.category;
     }));
-    if (size == "sm"){
-      var xAxis = d3.axisBottom(x).tickSize(-height).tickPadding(10).tickFormat(function(d){return "£"+d}).ticks(2)
+    if (size == "sm" | size == "md"){
+      var xAxis = d3.axisBottom(x).tickSize(-height).tickPadding(20).tickFormat(function(d){return "£"+d}).ticks(2)
     }
     else{
-      var xAxis = d3.axisBottom(x).tickSize(-height).tickPadding(10).tickFormat(function(d){return "£"+d}).ticks(5)
+      var xAxis = d3.axisBottom(x).tickSize(-height).tickPadding(20).tickFormat(function(d){return "£"+d}).ticks(5)
     }
 
       // .tickValues([0]).tickFormat("");
@@ -1211,7 +1328,7 @@ function drawGraphic() {
           return x(d.previous_spend+d.change)
         }
       })
-      .attr('fill', "#27A0CC")
+      .attr('fill', "#206095")
 
     svg.append('g')
       .selectAll('rect').data(data)
@@ -1239,10 +1356,10 @@ function drawGraphic() {
       })
       .attr('fill', function(d){
         if (d.change >= 0){
-          return "#206095"
+          return "#A6BFD5"
         }
         else{
-          return "#871A5B"
+          return "#902092"
         }
       })
 
@@ -1256,32 +1373,156 @@ function drawGraphic() {
         return x(d.input)
       })
       .attr('y', function(d) {
-        return y(d.category)+y.bandwidth()
+        return y(d.category)+y.bandwidth()/2
       })
-      // .attr('dx', function(d) {
-      //   return (x(d.change) - x(0)) > chart_width / 8 ? -5 : 5
-      // })
       .attr('dx',5)
-      .attr('dy', textpos)
-      // .attr('text-anchor', function(d) {
-      //   return (x(d.change) - x(0)) > chart_width / 8 ? "end" : "start"
-      // })
       .attr('text-anchor','start')
-      // .attr('fill', function(d) {
-      //   return (x(d.change) - x(0)) > chart_width / 8 ? "#fff" : "#206095";
-      // })
-      .attr('fill',"#206095")
-      .text(function(d) {
-        if (d.change > 0){
-          return "▲ £" + d3.format(",.2f")(d.change) + " (+"+ d3.format(",.0f")(d.inflation_rate)+"%)"
+
+      .attr('fill',function(d){
+        if (d.change >= 0){
+          return "#206095"
         }
-        else if (d.change < 0){
-          return "▼ £" + d3.format(",.2f")(d.change) + " ("+ d3.format(",.0f")(d.inflation_rate)+"%)"
+        else {
+          return "#902092"
+        }
+      })
+      .text(function(d) {
+        if ((option == "quick" & dvc.quickcategories.includes(d.cat_id) == false) | option == "superfast"){
+          if (d.input == 0){
+            return "N/A (No spending)"
+          }
+          else if (d.change > 0){
+            return "▲ £" + d3.format(",.0f")(d.change)+"*"
+          }
+          else if (d.change < 0){
+            return "▼ £" + d3.format(",.0f")(d.change)+"*"
+          }
+          else{
+            return "No change"
+          }
         }
         else{
-          return "No change"
+          if (d.input == 0){
+            return "N/A (No spending)"
+          }
+          else if (d.change > 0){
+            return "▲ £" + d3.format(",.0f")(d.change)
+          }
+          else if (d.change < 0){
+            return "▼ £" + d3.format(",.0f")(d.change)
+          }
+          else{
+            return "No change"
+          }
+        }
+        })
+      .attr("font-weight",700)
+
+    //add text label
+    svg.append('g')
+      .selectAll('text.value')
+      .data(data)
+      .enter()
+      .append('text')
+      .attr('x', function(d) {
+        return x(d.input)
+      })
+      .attr('y', function(d) {
+        return y(d.category)+y.bandwidth()/2
+      })
+      .attr('dx',5)
+      .attr('dy', 20)
+      .attr('text-anchor','start')
+
+      .attr('fill',function(d){
+        if (d.change >= 0){
+          return "#206095"
+        }
+        else {
+          return "#902092"
         }
       })
+      .text(function(d) {
+        if (d.change != 0){
+          return "(+"+ d3.format(",.0f")(d.inflation_rate)+"%)"
+        }
+        else{
+          return ""
+        }
+      })
+
+      //add text label
+      svg.append('g')
+        .selectAll('text.value')
+        .data(data)
+        .enter()
+        .append('text')
+        .attr('x', function(d) {
+          return 0
+        })
+        .attr('y', function(d) {
+          return y(d.category)+y.bandwidth()
+        })
+        .attr('dx',10)
+        .attr('dy', textpos)
+        .attr('text-anchor','start')
+
+        .attr('fill',"white")
+        .text(function(d) {
+          if ((option == "quick" & dvc.quickcategories.includes(d.cat_id) == false) | option == "superfast"){
+            if (size == "lg"){
+              if (d.previous_spend > maxX*0.1){
+                return "£"+d3.format(",.0f")(d.previous_spend)+"*"
+              }
+              else{
+                return " "
+              }
+            }
+            else if (size == "md"){
+              if (d.previous_spend > maxX*0.25){
+                return "£"+d3.format(",.0f")(d.previous_spend)+"*"
+              }
+              else{
+                return " "
+              }
+            }
+            else{
+              if (d.previous_spend > maxX*0.4){
+                return "£"+d3.format(",.0f")(d.previous_spend)+"*"
+              }
+              else{
+                return " "
+              }
+            }
+          }
+          else{
+            if (size == "lg"){
+              if (d.previous_spend > maxX*0.1){
+                return "£"+d3.format(",.0f")(d.previous_spend)
+              }
+              else{
+                return " "
+              }
+            }
+            else if (size == "md"){
+              if (d.previous_spend > maxX*0.25){
+                return "£"+d3.format(",.0f")(d.previous_spend)
+              }
+              else{
+                return " "
+              }
+            }
+            else{
+              if (d.previous_spend > maxX*0.4){
+                return "£"+d3.format(",.0f")(d.previous_spend)
+              }
+              else{
+                return " "
+              }
+            }
+          }
+        })
+        // .attr("font-weight",700)
 
       // svg.append('g')
       //   .selectAll('rect').data(averagesdata)
@@ -1323,6 +1564,20 @@ function drawGraphic() {
     var height = 250 - lineMargin.top - lineMargin.bottom
     var width = parseInt(d3.select(".results-input").style("width"));
     var chart_width = width - lineMargin.left - lineMargin.right
+
+    d3.select("#lineChart-alttext")
+      .text("This line chart shows your estimated inflation rate over the past 5 years."
+        + "In " + d3.timeFormat("%B %Y")(overall_inflation[0].date) + " your inflation rate was "
+        + d3.format(",.1f")(overall_inflation[0].pir) + " while CPIH was " + d3.format(",.1f")(overall_inflation[0].pir)
+        + ". In " + d3.timeFormat("%B %Y")(overall_inflation[12].date) + " your inflation rate was "
+        + d3.format(",.1f")(overall_inflation[12].pir) + " while CPIH was " + d3.format(",.1f")(overall_inflation[12].pir)
+        + ". In " + d3.timeFormat("%B %Y")(overall_inflation[24].date) + " your inflation rate was "
+        + d3.format(",.1f")(overall_inflation[24].pir) + " while CPIH was " + d3.format(",.1f")(overall_inflation[24].pir)
+        + ". In " + d3.timeFormat("%B %Y")(overall_inflation[36].date) + " your inflation rate was "
+        + d3.format(",.1f")(overall_inflation[36].pir) + " while CPIH was " + d3.format(",.1f")(overall_inflation[36].pir)
+        + ". In " + d3.timeFormat("%B %Y")(overall_inflation[48].date) + " your inflation rate was "
+        + d3.format(",.1f")(overall_inflation[48].pir) + " while CPIH was " + d3.format(",.1f")(overall_inflation[48].pir)
+      )
 
     var x = d3.scaleTime()
       .range([0, chart_width]);
@@ -1627,7 +1882,6 @@ function drawGraphic() {
   } //end load data
 
   function wrap(text, width) {
-    console.log(text)
     text.each(function() {
       var text = d3.select(this),
         words = text.text().split(/\s+/).reverse(),
