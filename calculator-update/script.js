@@ -43,6 +43,8 @@ function drawGraphic() {
       show(d3.select("#navbuttons"))
       show(d3.select("#updateDiv"))
       hide(d3.select("#startPage"))
+      pymChild.sendHeight();
+      document.getElementById("graphic-container").scrollIntoView(true)
     })
 
     // d3.select(".button-select").style('display','block')
@@ -993,7 +995,7 @@ function drawGraphic() {
         ". The second contributor to your overall inflation rate was " + data[0].data[1].category +
         " which increased your total monthly spend by " + d3.format(',.1f')(data[0].data[1].weighted_index) + "%"  +
         ". The third contributor to your overall inflation rate was " + data[0].data[2].category +
-        " which increased your total monthly spend by " + d3.format(',.1f')(data[0].data[2].weighted_index) + "%" 
+        " which increased your total monthly spend by " + d3.format(',.1f')(data[0].data[2].weighted_index) + "%"
       )
 
     var x = d3.scaleLinear()
